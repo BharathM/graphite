@@ -25,7 +25,6 @@ def get_iostat(delay):
         iostat_data.append(line.split())
     iostat_data[0] = [w.replace('/', '_') for w in iostat_data[0]]
     iostat_data[0] = [w.replace('%', 'percent_') for w in iostat_data[0]]
-    print iostat_data
     return iostat_data
 
 def run(sock, delay, hostname):
@@ -34,15 +33,12 @@ def run(sock, delay, hostname):
         lines = []
         iostat_data = get_iostat(delay)
         now = int(time.time())
+        #print now
         r=len(iostat_data)
         c=len(iostat_data[0])
-        print r
-        print c
         for x in range(1,r):
             for y in range(1,c):
-                print "%s-%s" % (x,y)
                 tuples.append((hostname+'.iostat.'+iostat_data[x][0]+'.'+iostat_data[0][y], (now,iostat_data[x][y])))
-        print("sending message")
         package = pickle.dumps(tuples, 1)
         size = struct.pack('!L', len(package))
         sock.sendall(size)
@@ -64,7 +60,6 @@ def main():
     process1 = subprocess.Popen(command1, stdout=subprocess.PIPE, shell=True)
     stdout1 = process1.communicate()[0].strip()
     hostname=stdout1.replace('.', '-')
-    print hostname
 
     sock = socket.socket()
     try:
