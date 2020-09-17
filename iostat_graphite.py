@@ -11,10 +11,10 @@ import struct
 
 CARBON_SERVER = '10.96.152.46'
 CARBON_PICKLE_PORT = 2004
-DELAY = 0
+DELAY = 10 #10 seconds is the default delay, it can be changed by passing the command line arguments.
 
-def get_iostat():
-    command = "iostat -xdy 10 1"
+def get_iostat(delay):
+    command = "iostat -xdy {} 1".format(delay)
     process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
     stdout = process.communicate()[0].strip()
     #Error logic to check iostat exists and data showing
@@ -32,7 +32,7 @@ def run(sock, delay, hostname):
     while True:
         tuples = ([])
         lines = []
-        iostat_data = get_iostat()
+        iostat_data = get_iostat(delay)
         now = int(time.time())
         r=len(iostat_data)
         c=len(iostat_data[0])
@@ -47,18 +47,19 @@ def run(sock, delay, hostname):
         size = struct.pack('!L', len(package))
         sock.sendall(size)
         sock.sendall(package)
-        time.sleep(delay)
+
 
 def main():
-    """Wrap it all up together"""
+    delay = DELAY
+         
     delay = DELAY
     if len(sys.argv) > 1:
         arg = sys.argv[1]
         if arg.isdigit():
             delay = int(arg)
         else:
-            sys.stderr.write("Ignoring non-integer argument. Using default: %ss\n" % delay)
-            
+            sys.stderr.write("Ignoring non-integer argument. Using default: %ss\n" % delay)         
+
     command1 = "hostname"
     process1 = subprocess.Popen(command1, stdout=subprocess.PIPE, shell=True)
     stdout1 = process1.communicate()[0].strip()
