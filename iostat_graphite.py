@@ -23,7 +23,7 @@ def get_iostat(delay):
     iostat_data=[]
     for line in lines:
         iostat_data.append(line.split())
-    iostat_data[0] = [w.replace('/', '_') for w in iostat_data[0]]
+    iostat_data[0] = [w.replace('/', '_per_') for w in iostat_data[0]]
     iostat_data[0] = [w.replace('%', 'percent_') for w in iostat_data[0]]
     return iostat_data
 
@@ -67,11 +67,7 @@ def main():
     except socket.error:
         raise SystemExit("Couldn't connect to %(server)s on port %(port)d, is carbon-cache.py running?" % { 'server':CARBON_SERVER, 'port':CARBON_PICKLE_PORT })
 
-    try:
-        run(sock, delay, hostname)
-    except KeyboardInterrupt:
-        sys.stderr.write("\nExiting on CTRL-c\n")
-        sys.exit(0)
+    run(sock, delay, hostname)
 
 if __name__ == "__main__":
     main()
