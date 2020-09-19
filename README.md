@@ -4,27 +4,9 @@ Capture the iostat output and send it to the Graphite server using Python Pickel
 # nfsiostat_graphite.py
 Capture the nfsiostat output and send it to the Graphite server using Python Pickele server. The default time delay was set to 60 seconds, this can be changed by sending the command line parameters. This program should work on any distribution of the linux. This program was designed to handle the garbled output as shown below, need to make few changes based on your nfsiostat output.
 
-xxxxxxxxx:/ifs/data/cust01/nfs/k8s-isnfs/xxxxxxxx-customscript-pvc-pvc-29cc294e-83ef-42bd-b565-0e1edcc256ee/xxxxxxxxx-customscript mounted on /var/vcap/data/kubelet/pods/eb7e27e2-6ace-4297-ab39-df43f64a250f/volume-subpaths/pvc-29cc294e-83ef-42bd-b565-0e1edcc256ee/perf23250-d2customscript/0:
+<p>pvc-0475f087-b120-4ecb-8f65-aad56b2dfb12/perf23250d2config_dfc_keystore_file mounted on /var/vcap/data/kubelet/pods/dd5634a4-b08a-4ea6-9f9b-6a3dcc55f1b9/volume-subpaths/pvc-0475f087-b120-4ecb-8f65-aad56b2dfb12/perf23250d2config/0:</p>
 
-   op/s         rpc bklog
-   6.72
-           0.00
-read:
-  ops/s            kB/s           kB/op         retrans         avg RTT (ms)    avg exe (ms)
-                  0.000
-          0.000
-          2.822
-       0 (0.0%)
-          0.909
-          0.909
-write:
-  ops/s            kB/s           kB/op         retrans         avg RTT (ms)    avg exe (ms)
-                  0.025
-         14.823
-        587.597
-       0 (0.0%)
-         13.444
-        478.395
+<p> op/s rpc bklog  6.72  0.00 read:  ops/s kB/s kB/op retrans avg RTT (ms) avg exe (ms)  0.000  0.000  2.822  0 (0.0%)  0.909  0.909 write:  ops/s kB/s kB/op retrans avg RTT (ms) avg exe (ms)  0.025  14.823  587.597  0 (0.0%)  13.444  478.395</p>
 
 These programs are used used identify the disk bottlenecks and capture the I/O throughput.
 
