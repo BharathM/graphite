@@ -11,20 +11,16 @@ import struct
 
 CARBON_SERVER = '10.96.152.46'
 CARBON_PICKLE_PORT = 2004
-DELAY = 5 #5*2 = 10 seconds is the default delay, it can be changed by passing the command line arguments.
+DELAY = 30 #30 * 2 (Two iterations) = 60 seconds is the default delay, it can be changed by passing the command line arguments.
 
 def get_iostat(delay):
     command = "nfsiostat {} 2".format(delay)
     #command = "iostat -x"
     process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
     stdout = process.communicate()[0].strip()
-    #print stdout
     lines = re.split('\n',stdout)
-    #print lines
-    #print len(lines)
     total_lines = len(lines)+1
     total_mounts=total_lines/22
-    #print total_mounts
 
     nfsiostat_data=[]
     nfsiostat_data.append(['mount','R_ops_per_s','R_KB_per_s','R_KB_per_ops','R_avgRTT_ms','R_avgexe_ms','W_ops_per_s','W_KB_per_s','W_KB_per_ops','W_avgRTT_ms','W_avgexe_ms'])
@@ -46,10 +42,6 @@ def get_iostat(delay):
 
         nfsiostat_data.append([l0,l7,l8,l9,l11,l12,l15,l16,l17,l19,l20])
 
-    #print nfsiostat_data
-    #print nfsiostat_data[1][1].strip('\"')
-    #print len(nfsiostat_data)
-
     substr1 = "pvc-"
     substr2 = "kubelet/pods/"
     substr3 = "/volumes/"
@@ -66,7 +58,6 @@ def get_iostat(delay):
         str1 = str1.replace('/', '-')
         str1 = str1.replace('.', '-')  
         nfsiostat_data[y][0] = str1
-    print  nfsiostat_data
     return nfsiostat_data
 
 def run(sock, delay, hostname):
@@ -75,23 +66,15 @@ def run(sock, delay, hostname):
         lines = []
         iostat_data = get_iostat(delay)
         now = int(time.time())
-        print now
         r=len(iostat_data)
         c=len(iostat_data[0])
         for x in range(1,r):
             for y in range(1,c):
-                #print hostname
-                #print iostat_data[x][0].strip('\"')
-                #print iostat_data[0][y].strip('\"')
-                #print iostat_data[x][y].strip('\"\'')
-                #tuples.append((hostname+'.nfsiostat.aaa', (now,iostat_data[x][y].strip('\"\''))))
                 tuples.append((hostname+'.nfsiostat.'+iostat_data[x][0].strip('\"')+'.'+iostat_data[0][y].strip('\"'), (now,iostat_data[x][y].strip('\"\''))))
-                #print "Touple created"
         package = pickle.dumps(tuples, 1)
         size = struct.pack('!L', len(package))
         sock.sendall(size)
         sock.sendall(package)
-        #print "Message sent"
 
 
 def main():

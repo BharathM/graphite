@@ -11,7 +11,7 @@ import struct
 
 CARBON_SERVER = '10.96.152.46'
 CARBON_PICKLE_PORT = 2004
-DELAY = 10 #10 seconds is the default delay, it can be changed by passing the command line arguments.
+DELAY = 60 #60 seconds is the default delay, it can be changed by passing the command line arguments.
 
 def get_iostat(delay):
     command = "iostat -xdy {} 1".format(delay)
@@ -33,7 +33,6 @@ def run(sock, delay, hostname):
         lines = []
         iostat_data = get_iostat(delay)
         now = int(time.time())
-        #print now
         r=len(iostat_data)
         c=len(iostat_data[0])
         for x in range(1,r):
