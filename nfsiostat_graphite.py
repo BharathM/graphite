@@ -88,7 +88,7 @@ def main():
         else:
             sys.stderr.write("Ignoring non-integer argument. Using default: %ss\n" % delay)         
 
-    command1 = "hostname"
+    command1 = "ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'"
     process1 = subprocess.Popen(command1, stdout=subprocess.PIPE, shell=True)
     stdout1 = process1.communicate()[0].strip()
     hostname=stdout1.replace('.', '-')
