@@ -11,7 +11,7 @@ import struct
 
 CARBON_SERVER = '10.96.152.46'
 CARBON_PICKLE_PORT = 2004
-DELAY = 30 #30 * 2 (Two iterations) = 60 seconds is the default delay, it can be changed by passing the command line arguments.
+DELAY = 30  #30 * 2 (Two iterations) = 60 seconds is the default delay, it can be changed by passing the command line arguments.
 
 def get_iostat(delay):
     command = "nfsiostat {} 2".format(delay)
@@ -100,6 +100,7 @@ def main():
         raise SystemExit("Couldn't connect to %(server)s on port %(port)d, is carbon-cache.py running?" % { 'server':CARBON_SERVER, 'port':CARBON_PICKLE_PORT })
 
     run(sock, delay, hostname)
+
 
 if __name__ == "__main__":
     main()
