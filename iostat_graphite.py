@@ -5,7 +5,6 @@ import re
 import sys
 import time
 import socket
-import platform
 import subprocess
 import pickle
 import struct
