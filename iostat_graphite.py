@@ -13,6 +13,7 @@ import struct
 CARBON_SERVER = '10.96.152.46'
 CARBON_PICKLE_PORT = 2004
 DELAY = 60  # 60 seconds is the default delay, it can be changed by passing the command line arguments.
+MACHINE_NAME = 'h'  # h - Metric based on the POD/VM hostname, ip - Metric based on the IP address of POD or VM
 
 
 def get_iostat(delay):
@@ -50,19 +51,32 @@ def run(sock, delay, hostname):
 
 def main():
     delay = DELAY
+    input2 = MACHINE_NAME
 
-    delay = DELAY
     if len(sys.argv) > 1:
         arg = sys.argv[1]
         if arg.isdigit():
             delay = int(arg)
         else:
-            sys.stderr.write("Ignoring non-integer argument. Using default: %ss\n" % delay)
+            sys.stderr.write("Ignoring 1st non-integer argument. Using default: %ss\n" % delay)
+        arg1 = sys.argv[2]
+        if arg1=="ip" or arg1=="h":
+            input2 = str(arg1)
+        else:
+            input2 = MACHINE_NAME
+            sys.stderr.write("Ignoring 2nd argument. Using default: %ss\n" % input2)
 
-    command1 = "ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'"
-    process1 = subprocess.Popen(command1, stdout=subprocess.PIPE, shell=True)
-    stdout1 = process1.communicate()[0].strip()
-    hostname = stdout1.replace('.', '-')
+    if input2=="ip":
+        # This command fail if the eth0 dosen't exist, need to add a logic to overcome this issue
+        command1 = "ifconfig eth0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'"
+        process1 = subprocess.Popen(command1, stdout=subprocess.PIPE, shell=True)
+        stdout1 = process1.communicate()[0].strip()
+        hostname = stdout1.replace('.', '-')
+    else:
+        command1 = "hostname"
+        process1 = subprocess.Popen(command1, stdout=subprocess.PIPE, shell=True)
+        stdout1 = process1.communicate()[0].strip()
+        hostname = stdout1.replace('.', '-')
 
     sock = socket.socket()
     try:
