@@ -27,6 +27,9 @@ def get_iostat(delay):
 
     for x in range(total_mounts/2,total_mounts):
         temp1 = lines[0 + (x * 9)]
+        if temp1.find('/pmnt/') != -1:
+            rindx = temp1.rindex('/pmnt/')
+            temp1 = temp1[rindx+6:-1]
         temp1 = temp1.replace('.', '-')
         temp1 = temp1.replace(' ', '_')
         temp1 = temp1.replace('/', '_')
